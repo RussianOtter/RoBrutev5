@@ -2,20 +2,16 @@ import time, requests, sys, time, urllib
 from datetime import timedelta
 import RoBruteLogo
 
-import argparse, sys
-parser = argparse.ArgumentParser()
-parser.add_argument("-f", "--fuzz",help="Fuzz Site & Select Fuzz File")
-parser.add_argument("-u", "--url",help="Target Url (* for target)")
-parser.add_argument("-s", "--s",help="s")
-parser.add_argument("-n", "--nohelp",help="Hides help",action="store_true")
-args = parser.parse_args()
+fuzz = False
+if len(sys.argv)-1 == 4:
+	fuzz = True
 
-if not args.nohelp:
-	parser.print_help()
-	print ""
-
-fuzz = args.fuzz
-url = args.url
+if "help" in sys.argv or "-n" in sys.argv:
+	print "\nFuzzer:"
+	print "Check README.md for syntax\n"
+	print "Brute Force:"
+	print "Set arg to 'brute' to see syntax"
+	sys.exit()
 
 def brute():
 	time.sleep(2)
@@ -87,7 +83,7 @@ def brute():
 		sys.stdout.write("\r         Trying %s of %s" %(a,num))
 		sys.stdout.flush()
 		if info > 2:
-			sys.stdout.write("\r            " + pwd + "\n")
+			sys.stdout.write("\r            " + pwd + "         \n")
 			elapsed_time = time.time() - start_time
 			print ""
 			time.sleep(3)
@@ -95,7 +91,18 @@ def brute():
 			print "   Time Elapsed:", str(times)
 			sys.exit()
 
-def fuzzer(url,file):
+def fuzzer():
+	import argparse
+	parser = argparse.ArgumentParser()
+	parser.add_argument("-f", "--fuzz",help="Fuzz Site & Select Fuzz File")
+	parser.add_argument("-u", "--url",help="Target Url (* for target)")
+	parser.add_argument("-n", "--nohelp",help="Hides help",action="store_true")
+	args = parser.parse_args()
+	if not args.nohelp:
+		parser.print_help()
+		print ""
+	file = args.fuzz
+	url = args.url
 	if "http" not in url:
 		url = "http://" + url
 	print "      -=- Fuzzing Website -=-"
@@ -117,7 +124,7 @@ def fuzzer(url,file):
 	print "   Time Elapsed:", str(times)
 
 if fuzz:
-	fuzzer(url,fuzz)
+	fuzzer()
 else:
 	brute()
 
@@ -142,4 +149,9 @@ http://demo.testfire.net/bank/login.aspx uid passw Welcome admin passes.txt
 12
 13
 14
+"""
+
+# Fuzzer Example:
+"""
+-u http://demo.testfire.net/* -f fuzz.data
 """
