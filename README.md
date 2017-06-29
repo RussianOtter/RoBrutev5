@@ -20,7 +20,8 @@ The speed depends on your internet connection and how
 big the website login page is.
 
 # FUZZER
-RoBrutev5's new url fuzzer has the following syntax;
+RoBrutev5's new url fuzzer has the following.
+***Syntax:***
 
 -F -t `example.com/*` -f `fuzz.data`
 
@@ -28,8 +29,7 @@ There are multiple uses for this, wether you want to test for urls or if you wan
 
 # SSH Brute Force
 SSH Brute Force is an extremely fast brute force option for RoBrute! This option creates threads for every password so each password gets carred out by a thread, allowing for faster speed!
-
-Syntax:
+***Syntax:***
 
 -S -i `ip address` -p `22` -u `admin` -P `basic.txt`
 
