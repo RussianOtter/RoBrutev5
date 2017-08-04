@@ -187,11 +187,34 @@ def sshb():
 		time.sleep(0.05)
 		dm.append(p)
 
+def check_cookie(_,target,find):
+	t = target.format(_)
+	n = urllib.urlopen(t).headers
+	if find in n.dict:
+		sys.stdout.write("\r\r"+t+"\n")
+
+def check_code(_,target,find):
+	t = target.format(_)
+	n = urllib.urlopen(t).code
+	if find == int(n):
+		sys.stdout.write("\r\r"+t+"\n")
+
+def check_in(_,target,find):
+	t = target.format(_)
+	n = urllib.urlopen(t).read()
+	if find in n:
+		sys.stdout.write("\r\r"+t+"\n")
+
 def fuzzer():
 	parser.add_argument("-F", "--Fuzzer",action="store_true")
 	parser.add_argument("-n", "--nohelp",help="Hides help",action="store_true")
 	parser.add_argument("-f", "--fuzz",help="Fuzz Site & Select Fuzz File")
 	parser.add_argument("-t", "--target",help="Target Url (* for target)")
+	parser.add_argument("-C", "--Cookie",help="Look For A Specific Cookie")
+	parser.add_argument("-c", "--code",help="Look For A Specific Responce Code", type=int)
+	parser.add_argument("-i", "--inn",help="Look For Words In The Website")
+	parser.add_argument("-r", "--rate",help="Rate Determines How Fast Requests Are Sent",default=0.5, type=float)
+	parser.add_argument("-m", "--monitor",help="See How Many Requests Have Been Sent", action="store_true")
 	args = parser.parse_args()
 	leave = False
 	file = args.fuzz
@@ -205,16 +228,42 @@ def fuzzer():
 	if "*" not in target:
 		print "'*' Symbol Needed To Target Fuzz Location!"
 		sys.exit()
+	if not args.code and not args.Cookie and not args.inn:
+		print "-C, -c, or -i Is Needed To Find Which Site Is Different!"
+		print "-C [Cookie]"
+		print "-c [Responce Code]"
+		print "-i [Text In HTML]"
+		sys.exit()
 	start_time = time.time()
 	target = target.replace("*","{0}")
 	f = open(file).readlines()
 	print "        Options Loaded:", len(f)
 	print ""
+	l = 0
 	for _ in f:
-		t = target.format(_)
-		n = urllib.urlopen(t).code
-		if n != 404:
-			print t
+		l = l + 1
+		if args.Cookie:
+			t = threading.Thread(target=check_cookie, args=(_,target,args.Cookie,))
+			try:
+				sys.stderr = t.start()
+			except:
+				time.sleep(0.5)
+		elif args.code:
+			t = threading.Thread(target=check_code, args=(_,target,args.code,))
+			try:
+				sys.stderr = t.start()
+			except:
+				time.sleep(0.5)
+		elif args.inn:
+			t = threading.Thread(target=check_in, args=(_,target,args.inn,))
+			try:
+				sys.stderr = t.start()
+			except:
+				time.sleep(0.5)
+		time.sleep(args.rate)
+		if args.monitor:
+			sys.stdout.write("\r"+str(l))
+	time.sleep()
 	elapsed_time = time.time() - start_time
 	times = str(timedelta(seconds=elapsed_time))
 	print "   Time Elapsed:", str(times)
@@ -238,5 +287,5 @@ if S:
 
 # Fuzzer Example:
 """
--F -t http://demo.testfire.net/* -f fuzz.data
+-F -t http://demo.testfire.net/* -f fuzz.data -r 0.5 -m -c 200
 """
