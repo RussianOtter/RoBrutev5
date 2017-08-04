@@ -23,7 +23,7 @@ big the website login page is.
 RoBrutev5's new url fuzzer has the following.
 ***Syntax:***
 
--F -t `example.com/*` -f `fuzz.data`
+-F -t `example.com/*` -f `fuzz.data` -m -r `0.5` -i `Welcome`
 
 There are multiple uses for this, wether you want to test for urls or if you want to get a list of random values to throw at the site!
 
