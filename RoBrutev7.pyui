@@ -609,7 +609,7 @@
           "border_width" : 1,
           "alignment" : "center",
           "text_color" : "RGBA(0.000000,1.000000,0.000000,1.000000)",
-          "text" : "Idel",
+          "text" : "Idle",
           "font_name" : "Menlo-Regular",
           "class" : "Label",
           "name" : "stat",
